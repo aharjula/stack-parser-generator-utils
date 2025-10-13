@@ -1,0 +1,100 @@
+{
+	"note!": "This file defines the grammars and configs as well as templates to use when building the end results.",
+	"tasks": [
+		{
+			"name": "stack_maxima_parser crate",
+			"grammar": "full-STACK-maxima.json",
+			"lang": "Rust",
+			"outputs": [
+				{
+					"to": "stack_maxima_parser-crate/src/parser.rs",
+					"from": "rust-template.rs",
+					"replace": {
+						"reduce": "FN:reduce_match_block"
+					}
+				},
+				{
+					"to": "stack_maxima_parser-crate/src/parsertables.rs",
+					"from": "empty",
+					"replace": {
+						"content": "FN:condensedtables_to_phf"
+					}
+				}
+			]
+		},
+		{
+			"name": "stack full parser",
+			"grammar": "full-STACK-maxima.json",
+			"lang": "PHP",
+			"outputs": [
+				{
+					"to": "stack/stack/maximaparser/autogen/parser-root.php",
+					"from": "php-template.php",
+					"replace": {
+						"tables-json": "STR:lalr-root.json",
+						"class-name": "STR:root",
+						"reduce-map": "FN:reduce_map_php",
+						"functions": "FN:reduce_functions_php"
+					}
+				},
+				{
+					"to": "stack/stack/maximaparser/autogen/lalr-root.json",
+					"from": "empty",
+					"replace": {
+						"content": "FN:condensedtables_json"
+					}
+				}
+			]
+		},
+		{
+			"name": "stack equivline parser",
+			"grammar": "full-STACK-maxima.json",
+			"grammarmod": "mods-equivline.json",
+			"lang": "PHP",
+			"outputs": [
+				{
+					"to": "stack/stack/maximaparser/autogen/parser-equivline.php",
+					"from": "php-template.php",
+					"replace": {
+						"tables-json": "STR:lalr-equivline.json",
+						"class-name": "STR:equivline",
+						"reduce-map": "FN:reduce_map_php",
+						"functions": "FN:reduce_functions_php"
+					}
+				},
+				{
+					"to": "stack/stack/maximaparser/autogen/lalr-equivline.json",
+					"from": "empty",
+					"replace": {
+						"content": "FN:condensedtables_json"
+					}
+				}
+			]
+		},
+		{
+			"name": "stack lite parser",
+			"grammar": "full-STACK-maxima.json",
+			"grammarmod": "mods-lite.json",
+			"lang": "PHP",
+			"outputs": [
+				{
+					"to": "stack/stack/maximaparser/autogen/parser-lite.php",
+					"from": "php-template.php",
+					"replace": {
+						"tables-json": "STR:lalr-lite.json",
+						"class-name": "STR:lite",
+						"reduce-map": "FN:reduce_map_php",
+						"functions": "FN:reduce_functions_php"
+					}
+				},
+				{
+					"to": "stack/stack/maximaparser/autogen/lalr-lite.json",
+					"from": "empty",
+					"replace": {
+						"content": "FN:condensedtables_json"
+					}
+				}
+			]
+		}	
+	]
+}

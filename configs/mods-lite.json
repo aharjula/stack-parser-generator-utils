@@ -1,0 +1,110 @@
+[
+	{
+		"note!": "This set of modifications drops support for multiple statements and program flow.",
+		"targetrule": {
+			"left": "Start",
+			"right": ["Root"],
+			"num": 0
+		},
+		"newrule": {
+			"left": "Start",
+			"right": ["Statement"],
+			"num": 0,
+			"php": "$term = $term0;",
+    		"ts": "term = term0;",
+    		"rs": "ParserStackItem::Node(term0n)"
+		}
+	},
+	{
+		"note!": "Lisp identifiers are not necessary on the student side",
+		"targetrule": {
+		    "left": "IndexableOrCallable",
+		    "right": ["?", "LISP ID"],
+		    "num": 0
+		}
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "Root"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "StatementList"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "StatementListN"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "EvalFlags"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "Flow"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "LoopBit"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "LoopBits"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "IfTail"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "IfBase"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "Loop"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "nounand"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "nounor"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "nounadd"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "nounsub"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "nounpow"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "noundiv"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "blankmult"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "STACKpmOPT"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "nouneq"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "#pm#"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "UNARY_RECIP"
+	}
+]

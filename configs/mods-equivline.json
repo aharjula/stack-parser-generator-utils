@@ -1,0 +1,66 @@
+[
+	{
+		"note!": "This set of modifications replaces the root rule with the necessary bits for EquivLine.",
+		"targetrule": {
+			"left": "Start",
+			"right": ["Root"],
+			"num": 0
+		},
+		"newrule": {
+			"left": "Start",
+			"right": ["EquivLine"],
+			"num": 0,
+			"php": "$term = $term0;",
+    		"ts": "term = term0;",
+    		"rs": "ParserStackItem::Node(term0n)"
+		}
+	},
+	{
+		"newrule": {
+			"left": "EquivLine",
+			"right": ["let", "Statement"],
+			"num": 0,
+			"php": "$term = new MP_Let($term1);\n$term->set_position_from_token_node($term0, $term1);"
+		}
+	},
+	{
+		"newrule": {
+			"left": "EquivLine",
+			"right": ["=", "TopOp"],
+			"num": 0,
+			"php": "$term = new MP_Prefixeq($term1);\n$term->set_position_from_token_node($term0, $term1);"
+		}
+	},
+	{
+		"newrule": {
+			"left": "EquivLine",
+			"right": ["Statement"],
+			"num": 0,
+			"php": "$term = new MP_Statement($term0, []);\n$term->set_position_from_node($term0);"
+		}
+	},
+	{
+		"note!": "Lisp identifiers are not necessary on the student side",
+		"targetrule": {
+		    "left": "IndexableOrCallable",
+		    "right": ["?", "LISP ID"],
+		    "num": 0
+		}
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "Root"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "StatementList"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "StatementListN"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "EvalFlags"
+	}
+]
