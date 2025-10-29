@@ -11,7 +11,7 @@
 			"right": ["Statement"],
 			"num": 0,
 			"php": "$term = $term0;",
-    		"ts": "term = term0;",
+    		"js": "term0",
     		"rs": "ParserStackItem::Node(term0n)"
 		}
 	},
@@ -106,5 +106,13 @@
 	{
 		"note!": "Strip away most of the core",
 		"removenonterminal": "UNARY_RECIP"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "@@Is@@"
+	},
+	{
+		"note!": "Strip away most of the core",
+		"removenonterminal": "@@IS@@"
 	}
 ]

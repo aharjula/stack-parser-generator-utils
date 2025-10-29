@@ -106,22 +106,20 @@ class stack_maxima_parser2_lite {
 				[3,40],
 				[3,40],
 				[3,40],
-				[3,68],
-				[3,69],
 				[2,27],
 				[3,40],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
-				[3,72],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
+				[3,70],
 				[3,40],
 				[3,40],
 				[3,40],
@@ -606,7 +604,7 @@ class stack_maxima_parser2_lite {
 	 * 36: OpPrefix ->   ?  TopOp
 	 * 62: OpPrefix ->   nounnot  TopOp
 	 * 63: OpPrefix ->   %not  TopOp
-	 * 70: OpPrefix ->   nounnot   TopOp
+	 * 68: OpPrefix ->   nounnot   TopOp
 	 */
 	private function r27($term1, $term0) {
 		$term = new MP_PrefixOp($term0->value, $term1);
@@ -668,11 +666,11 @@ class stack_maxima_parser2_lite {
 	 * 65: OpInfix ->   TopOp  %or  TopOp
 	 * 66: OpInfix ->   TopOp  nounmul  TopOp
 	 * 67: OpInfix ->   TopOp  @  TopOp
-	 * 71: OpInfix ->   TopOp  implies  TopOp
-	 * 84: OpInfix ->   TopOp  xor  TopOp
-	 * 85: OpInfix ->   TopOp  xnor  TopOp
-	 * 86: OpInfix ->   TopOp  nor  TopOp
-	 * 87: OpInfix ->   TopOp  nand  TopOp
+	 * 69: OpInfix ->   TopOp  implies  TopOp
+	 * 82: OpInfix ->   TopOp  xor  TopOp
+	 * 83: OpInfix ->   TopOp  xnor  TopOp
+	 * 84: OpInfix ->   TopOp  nor  TopOp
+	 * 85: OpInfix ->   TopOp  nand  TopOp
 	 */
 	private function r40($term2, $term1, $term0) {
 		$term = new MP_Operation($term1->value, $term0, $term2);
@@ -694,44 +692,20 @@ class stack_maxima_parser2_lite {
 	
 	/**
 	 * Reduce logic for rules:
-	 * 68: OpInfix ->   TopOp  @@Is@@  TopOp
+	 * 70: OpInfix ->   TopOp   ^-  TopOp
+	 * 71: OpInfix ->   TopOp   ^+  TopOp
+	 * 72: OpInfix ->   TopOp   ^+-  TopOp
+	 * 73: OpInfix ->   TopOp   ^#pm#  TopOp
+	 * 74: OpInfix ->   TopOp   **-  TopOp
+	 * 75: OpInfix ->   TopOp   **+  TopOp
+	 * 76: OpInfix ->   TopOp   **+-  TopOp
+	 * 77: OpInfix ->   TopOp   **#pm#  TopOp
+	 * 78: OpInfix ->   TopOp   ^^-  TopOp
+	 * 79: OpInfix ->   TopOp   ^^+  TopOp
+	 * 80: OpInfix ->   TopOp   ^^+-  TopOp
+	 * 81: OpInfix ->   TopOp   ^^#pm#  TopOp
 	 */
-	private function r68($term2, $term1, $term0) {
-		$term = new MP_Operation('*', $term0, $term2);
-		$term->set_position_from_nodes($term0, $term2);
-		$term->position['fixspaces'] = true;
-	
-		return $term;
-	}
-	
-	/**
-	 * Reduce logic for rules:
-	 * 69: OpInfix ->   TopOp  @@IS@@  TopOp
-	 */
-	private function r69($term2, $term1, $term0) {
-		$term = new MP_Operation('*', $term0, $term2);
-		$term->set_position_from_nodes($term0, $term2);
-		$term->position['insertstars'] = true;
-	
-		return $term;
-	}
-	
-	/**
-	 * Reduce logic for rules:
-	 * 72: OpInfix ->   TopOp   ^-  TopOp
-	 * 73: OpInfix ->   TopOp   ^+  TopOp
-	 * 74: OpInfix ->   TopOp   ^+-  TopOp
-	 * 75: OpInfix ->   TopOp   ^#pm#  TopOp
-	 * 76: OpInfix ->   TopOp   **-  TopOp
-	 * 77: OpInfix ->   TopOp   **+  TopOp
-	 * 78: OpInfix ->   TopOp   **+-  TopOp
-	 * 79: OpInfix ->   TopOp   **#pm#  TopOp
-	 * 80: OpInfix ->   TopOp   ^^-  TopOp
-	 * 81: OpInfix ->   TopOp   ^^+  TopOp
-	 * 82: OpInfix ->   TopOp   ^^+-  TopOp
-	 * 83: OpInfix ->   TopOp   ^^#pm#  TopOp
-	 */
-	private function r72($term2, $term1, $term0) {
+	private function r70($term2, $term1, $term0) {
 		list($op1, $op2) = $term1->split();
 		$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));
 		$term->set_position_from_nodes($term0, $term2);

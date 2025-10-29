@@ -95,6 +95,22 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "stack lite JS-parser (a bit slower due to a compression step)",
+			"grammar": "full-STACK-maxima.json",
+			"grammarmod": "mods-lite.json",
+			"lang": "JS",
+			"outputs": [
+				{
+					"to": "stack/corsscripts/lite-parser.js",
+					"from": "js-template.js",
+					"replace": {
+						"reduce-map": "FN:reduce_map_js",
+						"tables": "FN:condensedtables_js"
+					}
+				}
+			]
 		}	
 	]
 }

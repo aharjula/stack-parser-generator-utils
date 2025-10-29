@@ -476,6 +476,10 @@ fn main() {
                                 let tables: ParserTables = condensedtables(rules.clone());
                                 serde_json::to_string(&tables).expect("No reason to not serialise?")
                             },
+                            "FN:condensedtables_js" => {
+                                let tables: ParserTables = condensedtables(rules.clone());
+                                condensedtables_js_compres(tables)
+                            },
                             "FN:reduce_map_php" => {
                                 let code = reduce_map_php(rules.clone());
                                 let mut out: String = "".to_string();
@@ -491,6 +495,19 @@ fn main() {
                             },
                             "FN:reduce_functions_php" => {
                                 let code = reduce_functions_php(rules.clone());
+                                let mut out: String = "".to_string();
+                                for line in code.split("\n") {
+                                    let indent = line.chars().take_while(|c| *c == '>').count();
+                                    let mut rest = line;
+                                    if indent > 0 {
+                                        rest = rest.split_at(indent).1;
+                                    }
+                                    out.push_str(format!("\t{}{}\n", "\t".to_string().repeat(indent), rest).as_str());
+                                }
+                                out.trim().to_string()
+                            },
+                            "FN:reduce_map_js" => {
+                                let code = reduce_map_js(rules.clone());
                                 let mut out: String = "".to_string();
                                 for line in code.split("\n") {
                                     let indent = line.chars().take_while(|c| *c == '>').count();
@@ -1598,3 +1615,204 @@ fn reduce_functions_php(rules: Vec<Rule>) -> String {
 }
 
 
+fn reduce_map_js(rules: Vec<Rule>) -> String {
+    let mut result: String = "[\n".to_string();
+    let mut codes: HashMap<(usize,String),usize> = HashMap::new();
+
+    for rule in &rules {
+        let rl: usize = if rule.right.contains(&None) { 0 } else {rule.right.len()};
+
+        let mut code: String = "(".to_string();
+        let mut length: usize = rl;
+        let mut first = true;
+        while length > 0 {
+            if first {
+                first = false;
+            } else {
+                code.push_str(", ");
+            }
+            length = length - 1;
+            code.push_str(&format!("term{}", length));
+        }
+        if rule.js.find(';') == None {
+            code.push_str(") => ");
+            code.push_str(&rule.js.clone());
+        } else {
+            code.push_str(") => {\n");
+            code.push_str(&rule.js.clone());
+            code.push_str("}");
+        }
+
+        match codes.get(&(rl, code.clone())) {
+            None => {
+                if codes.len() > 0 {
+                    result.push_str(",\n");
+                }
+                result.push_str(&format!(">[{},{}]", rl, code));
+                codes.insert((rl, code), rule.num);
+            },
+            Some(v) => {
+                result.push_str(&format!(",\n>[{},{}]", rl, v));
+            }
+        }
+    }
+
+    result.push_str("\n]");
+    return result;
+}
+
+
+fn compress_to_js_string(raw: String) -> String {
+    // Identifies unused sequences and replaces most common ones,
+    // As long as the resulting string with the replacement commands
+    // is shorter than the original. Will pick between "" and '' strings,
+    // and returns fully escaped and wrapped version.
+    // NOTE! Assumes that the string is ASCII.
+    let mut work: String = raw;
+
+    let mut replaces: String = "".to_string();
+    let mut freechars: Vec<char> = Vec::new();
+    for i in 32..=126 { // Visible, ASCII-7bit
+        // ", ', and \
+        if i != 34 && i != 39 && i != 92 && work.chars().position(|c| c == (i as u8 as char)) == None {
+            freechars.push(i as u8 as char);
+        }
+    }
+
+    // First figure out if we want '' or "" string?
+    let mut single_count: usize = 0;
+    let mut double_count: usize = 0;
+    for i in 0..work.len() {
+        if work.as_bytes()[i] == 39 {
+            single_count = single_count + 1;
+        } else if work.as_bytes()[i] == 34 {
+            double_count = double_count + 1;
+        }
+    }
+    let wrap_single: bool = double_count > single_count;
+    if wrap_single && single_count > 11 {
+        // More escaping than replace.
+        let used = freechars.pop().expect("Expected there to be some chars.");
+        work = work.replace('\'', &used.to_string());
+        replaces.push_str(&format!(".replaceAll('{}',\"'\"){}", used, replaces));
+    }
+    if !wrap_single && double_count > 11 {
+        // More escaping than replace.
+        let used = freechars.pop().expect("Expected there to be some chars.");
+        work = work.replace('"', &used.to_string());
+        replaces.push_str(&format!(".replaceAll('{}','\"'){}", used, replaces));
+    }
+
+    let mut bestscore: usize = 0;
+
+    // Single char cases.
+    while freechars.len() > 0 {
+        let used = freechars.pop().unwrap();
+        // Find the most repeated substring of atleast two chars.
+        // Also no unicode here so bytes are fine.
+        let mut counts: HashMap<String,usize> = HashMap::new();
+        for len in 2..8 {
+            for i in 0..(work.chars().count()-len) {
+                let subs: String = work[i..i+len].to_string();
+                match counts.get(&subs) {
+                    Some(n) => counts.insert(subs, n + 1),
+                    None => counts.insert(subs, 1)
+                };
+            }
+        }
+
+        bestscore = 0;
+        let mut bestsubs: String = "NO SUCH STRING".to_string();
+        for (subs, count) in counts.into_iter() {
+            let score: usize = (subs.len()-1)*count;
+            if count > bestscore {
+                bestscore = score;
+                bestsubs = subs.clone();
+            }
+        }
+        if bestscore < format!(".replaceAll('{}','{}')", used, bestsubs).len() + 1 {
+            break;
+        }
+
+        work = work.replace(&bestsubs, &used.to_string());
+        replaces = format!(".replaceAll('{}','{}'){}", used, bestsubs, replaces);
+    }
+
+    while bestscore > 25 {
+        // First find a pairing not present in any permutation.
+        let mut pair: Option<String> = None;
+
+        for i in 33..=126 { // Visible, ASCII-7bit
+            // ", ', and \
+            if i != 34 && i != 39 && i != 92 {
+                for j in 33..=126 { // Visible, ASCII-7bit
+                    // ", ', and \
+                    if i != j && j != 34 && j != 39 && j != 92 {
+                        let test1 = format!("{}{}", i as u8 as char, j as u8 as char);
+                        let test2 = format!("{}{}", j as u8 as char, i as u8 as char);
+                        if !(work.contains(&test1) || work.contains(&test2)) {
+                            pair = Some(test1);
+                            break;
+                        }
+                    }
+                }
+            }
+            if pair != None {
+                break;
+            }
+        }
+
+        if pair == None {
+            break;
+        }
+        // Find the most repeated substring of atleast three chars.
+        // Also no unicode here so bytes are fine.
+        let mut counts: HashMap<String,usize> = HashMap::new();
+        for len in 3..8 {
+            for i in 0..(work.chars().count()-len) {
+                let subs: String = work[i..i+len].to_string();
+                match counts.get(&subs) {
+                    Some(n) => counts.insert(subs, n + 1),
+                    None => counts.insert(subs, 1)
+                };
+            }
+        }
+
+        bestscore = 0;
+        let mut bestsubs: String = "NO SUCH STRING".to_string();
+        for (subs, count) in counts.into_iter() {
+            let score: usize = (subs.len()-2)*count;
+            if count > bestscore {
+                bestscore = score;
+                bestsubs = subs.clone();
+            }
+        }
+        if bestscore < format!(".replaceAll('{}','{}')", pair.clone().unwrap(), bestsubs).len() + 1 {
+            break;
+        }
+
+        work = work.replace(&bestsubs, &pair.clone().unwrap().to_string());
+        replaces = format!(".replaceAll('{}','{}'){}", pair.clone().unwrap(), bestsubs, replaces);
+    }
+
+
+    // Finally escape if need be and join the replacements to the output.
+    if wrap_single {
+        work = work.replace('\'', "\\'");
+        work = format!("'{}'{}", work, replaces);
+    } else {
+        work = work.replace('"', "\\\"");
+        work = format!("'{}'{}", work, replaces);
+    }
+
+    return work;
+}
+
+
+fn condensedtables_js_compres(tables: ParserTables) -> String {
+    // Does some work to make the JSON format tables fit into a "String" within the JS-code.
+    // Replaces some chars to make things more compact. Saves 30-50% depending on grammar variant.
+    let work: String = serde_json::to_string(&tables).expect("No reason to not serialise?");
+
+    return compress_to_js_string(work);
+}
