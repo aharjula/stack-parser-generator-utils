@@ -1,4 +1,7 @@
-use indexmap::{IndexMap as HashMap};
+use indexmap::{IndexMap as HashMap}; 
+// We really override the randomised HashMap completely,
+// we do not need that type of security feature here.
+
 use serde::{Deserialize, Serialize, Serializer, ser::SerializeSeq};
 use serde_json::{Map as SerdeMap, Value as JSONValue};
 use ::phf::{Map, phf_map};
@@ -1042,7 +1045,7 @@ fn condensedtables(rules: Vec<Rule>) -> ParserTables {
         }
         nt_to_id.insert(item.clone(), result.nonterminals.len());
         result.nonterminals.push(item.clone());
-        token_counts.remove(&item);
+        token_counts.shift_remove(&item);
         c = token_counts.len();
     }
 
@@ -1073,7 +1076,7 @@ fn condensedtables(rules: Vec<Rule>) -> ParserTables {
         }
         t_to_id.insert(item.clone(), result.terminals.len());
         result.terminals.push(item.clone());
-        token_counts.remove(&item);
+        token_counts.shift_remove(&item);
         c = token_counts.len();
     }
 
