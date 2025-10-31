@@ -56,13 +56,14 @@ Should you wish to add a new operator to the parser, do as follows:
 
 ## Current outputs
 
-Currently the generator outputs two different products:
+Currently the generator outputs three different products:
 
  1. The Rust version of the parser published as the crate called 
     [`stack_maxima_parser`](https://crates.io/crates/stack_maxima_parser).
  2. The PHP version intended to be used inside STACK.
+ 3. The lite JS version intended to be used for Maxima to custom syntax
+    rewriting in client side operations of STACK questions.
 
-In the future a JS/TS version is probably going to be added.
 
 ## License
 
