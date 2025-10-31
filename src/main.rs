@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use indexmap::{IndexMap as HashMap};
 use serde::{Deserialize, Serialize, Serializer, ser::SerializeSeq};
 use serde_json::{Map as SerdeMap, Value as JSONValue};
 use ::phf::{Map, phf_map};
