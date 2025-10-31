@@ -84,7 +84,7 @@ class MPNode {
 	// its Math-library. Does not override any of the given options.
 	toJS(opt) {
 		if (opt === undefined) {
-			opt = {'functions': {}, 'variables': {}, 'operators' : {}};
+			opt = {'functions': {}, 'variables': {}, 'operators' : {}, 'decimal separator': '.', 'list separator': ','};
 		} else {
 			if (opt.functions === undefined) {
 				opt.functions = {};
@@ -94,6 +94,12 @@ class MPNode {
 			}
 			if (opt.operators === undefined) {
 				opt.operators = {};
+			}
+			if (!opt.hasOwnProperty('decimal separator')) {
+				opt['decimal separator'] = '.';
+			}
+			if (!opt.hasOwnProperty('list separator')) {
+				opt['list separator'] = ';';
 			}
 		}
 		// Basic functions. Mainly renames.
@@ -121,7 +127,8 @@ class MPNode {
 			'min' : 'Math.min',
 			'signum' : 'Math.sign',
 			'sqrt': 'Math.sqrt',
-			'root': (args, o) => args.length === 1 ? 'Math.sqrt(' + args[0].translate(o) + ')' : 'Math.pow(' + args[0].translate(o) + ',1.0/(' + args[1].translate(o) + '))',
+			// Note the list separator, it is always defined here but not guaranteed in all translation logic.
+			'root': (args, o) => args.length === 1 ? 'Math.sqrt(' + args[0].translate(o) + ')' : 'Math.pow(' + args[0].translate(o) + o['list separator'] + '1/(' + args[1].translate(o) + '))',
 		};
 
 		// Override with incoming.
@@ -148,8 +155,8 @@ class MPNode {
 			'or': '||',
 			'not': '!',
 			'#': '!=',
-			'^': (lhs, rhs, o) => 'Math.pow(' + lhs.translate(o) + ',' + rhs.translate(o) + ')',
-			'**': (lhs, rhs, o) => 'Math.pow(' + lhs.translate(o) + ',' + rhs.translate(o) + ')',
+			'^': (lhs, rhs, o) => 'Math.pow(' + lhs.translate(o) + o['list separator'] + rhs.translate(o) + ')',
+			'**': (lhs, rhs, o) => 'Math.pow(' + lhs.translate(o) + o['list separator'] + rhs.translate(o) + ')',
 			'*': '*',
 			'/': '/',
 			'-': '-',
@@ -168,7 +175,7 @@ class MPNode {
 	// JSXGraphMath-library. Does not override any of the given options.
 	toJessieCode(opt) {
 		if (opt === undefined) {
-			opt = {'functions': {}, 'variables': {}, 'operators' : {}};
+			opt = {'functions': {}, 'variables': {}, 'operators' : {}, 'decimal separator': '.', 'list separator': ','};
 		} else {
 			if (opt.functions === undefined) {
 				opt.functions = {};
@@ -178,6 +185,12 @@ class MPNode {
 			}
 			if (opt.operators === undefined) {
 				opt.operators = {};
+			}
+			if (!opt.hasOwnProperty('decimal separator')) {
+				opt['decimal separator'] = '.';
+			}
+			if (!opt.hasOwnProperty('list separator')) {
+				opt['list separator'] = ';';
 			}
 		}
 
@@ -200,7 +213,7 @@ class MPNode {
 		// Operators, mapping to functions.
 		let operators = {
 			'!': (lhs, o) => 'JXG.Math.factorial(' + lhs.translate(o) + ')',
-			'xor' : (lhs, rhs, o) => 'JXG.Math.xor(' + lhs.translate(o) + ',' + rhs.translate(o) + ')',
+			'xor' : (lhs, rhs, o) => 'JXG.Math.xor(' + lhs.translate(o) + o['list separator'] + rhs.translate(o) + ')',
 		};
 
 		// Override with incoming.
@@ -263,6 +276,14 @@ class MPFloat extends MPAtom {
 	}
 
 	toString(opt) {
+		let r = '' + this.value;
+		if (opt !== undefined && opt['decimal separator'] !== undefined && opt['decimal separator'] !== '.') {
+			r = r.replace('.', opt['decimal separator']);
+		}
+		return r;
+	}
+
+	translate(opt) {
 		let r = '' + this.value;
 		if (opt !== undefined && opt['decimal separator'] !== undefined && opt['decimal separator'] !== '.') {
 			r = r.replace('.', opt['decimal separator']);
@@ -348,6 +369,9 @@ class MPFunctionCall extends MPNode {
 		} else if (this.name instanceof MPIdentifier) {
 			console.log("Translation of undeclared function: " + this.name.value);
 			name = this.name.value;
+		}
+		if (opt !== undefined && opt['list separator'] !== undefined) {
+			return name + '(' + this.args.map((x)=>x.translate(opt)).join(opt['list separator']) + ')';
 		}
 		return name + '(' + this.args.map((x)=>x.translate(opt)).join(',') + ')';
 	}
@@ -549,6 +573,9 @@ class MPList extends MPNode {
 	}
 
 	translate(opt) {
+		if (opt !== undefined && opt['list separator'] !== undefined) {
+			return '[' + this.items.map((x)=>x.translate(opt)).join(opt['list separator']) + ']';
+		}
 		return '[' + this.items.map((x)=>x.translate(opt)).join(',') + ']';
 	}
 }
