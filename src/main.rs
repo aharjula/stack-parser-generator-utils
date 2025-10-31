@@ -1714,7 +1714,7 @@ fn compress_to_js_string(raw: String) -> String {
         // Find the most repeated substring of atleast two chars.
         // Also no unicode here so bytes are fine.
         let mut counts: HashMap<String,usize> = HashMap::new();
-        for len in 2..8 {
+        for len in (2..8).rev() {
             for i in 0..(work.chars().count()-len) {
                 let subs: String = work[i..i+len].to_string();
                 match counts.get(&subs) {
@@ -1771,7 +1771,7 @@ fn compress_to_js_string(raw: String) -> String {
         // Find the most repeated substring of atleast three chars.
         // Also no unicode here so bytes are fine.
         let mut counts: HashMap<String,usize> = HashMap::new();
-        for len in 3..8 {
+        for len in (3..8).rev() {
             for i in 0..(work.chars().count()-len) {
                 let subs: String = work[i..i+len].to_string();
                 match counts.get(&subs) {
