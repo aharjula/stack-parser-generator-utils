@@ -99,7 +99,7 @@ class MPNode {
 				opt['decimal separator'] = '.';
 			}
 			if (!opt.hasOwnProperty('list separator')) {
-				opt['list separator'] = ';';
+				opt['list separator'] = ',';
 			}
 		}
 		// Basic functions. Mainly renames.
@@ -190,7 +190,7 @@ class MPNode {
 				opt['decimal separator'] = '.';
 			}
 			if (!opt.hasOwnProperty('list separator')) {
-				opt['list separator'] = ';';
+				opt['list separator'] = ',';
 			}
 		}
 
