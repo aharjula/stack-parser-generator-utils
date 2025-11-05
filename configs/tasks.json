@@ -103,7 +103,7 @@
 			"lang": "JS",
 			"outputs": [
 				{
-					"to": "stack/corsscripts/lite-parser.js",
+					"to": "stack/corsscripts/stackmplite.js",
 					"from": "js-template.js",
 					"replace": {
 						"reduce-map": "FN:reduce_map_js",
