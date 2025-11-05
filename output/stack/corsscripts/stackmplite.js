@@ -1565,7 +1565,7 @@ const reducemap = [
 		[2,27],
 		[3,39],
 		[3,(term2, term1, term0) => {
-	let [op1,op2] = term1.split(',');
+	let [op1,op2] = term1.v.split(',');
 	let term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));
 	return term;}],
 		[3,70],
@@ -1646,7 +1646,9 @@ class MPParser {
 									next = lexer.get();
 								}
 								if (next.t === TOKENTYPES.SYM && (next.v === '-' || next.v === '+' || next.v === '+-' || next.v === '#pm#')) {
+									terminal = ' ' + token.v + next.v;
 									token.v += ',' + next.v;
+									break;
 								} else {
 									lexer.return_token(next);
 								}

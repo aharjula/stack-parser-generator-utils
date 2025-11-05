@@ -1546,7 +1546,9 @@ class MPParser {
 									next = lexer.get();
 								}
 								if (next.t === TOKENTYPES.SYM && (next.v === '-' || next.v === '+' || next.v === '+-' || next.v === '#pm#')) {
+									terminal = ' ' + token.v + next.v;
 									token.v += ',' + next.v;
+									break;
 								} else {
 									lexer.return_token(next);
 								}

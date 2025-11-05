@@ -1286,7 +1286,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 113
   },
   {
@@ -1298,7 +1298,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 114
   },
   {
@@ -1310,7 +1310,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 115
   },
   {
@@ -1322,7 +1322,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 116
   },
   {
@@ -1334,7 +1334,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 117
   },
   {
@@ -1346,7 +1346,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 118
   },
   {
@@ -1358,7 +1358,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 119
   },
   {
@@ -1370,7 +1370,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 120
   },
   {
@@ -1382,7 +1382,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 121
   },
   {
@@ -1394,7 +1394,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 122
   },
   {
@@ -1406,7 +1406,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 123
   },
   {
@@ -1418,7 +1418,7 @@
     ],
     "php": "list($op1, $op2) = $term1->split();\n$term = new MP_Operation($op1->value, $term0, new MP_PrefixOp($op2->value, $term2));\n$term->set_position_from_nodes($term0, $term2);\n$term->rhs->set_position_from_token_node($op2, $term2);",
     "rs": "let (op1,op2) = term1t.split();\nif let StackMaximaParserTokenType::SYMBOL(symbol2) = op2.value.clone() {\n>term2mn = MPNode::new(MPPosition::new_tn(&op2, &term2mn), MPNodeType::PrefixOperation(symbol2, Box::new(term2mn)))\n} else {\n>panic!(\"Unexpected token type.\")\n};\nif let StackMaximaParserTokenType::SYMBOL(symbol1) = op1.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2mn), MPNodeType::Operation(Box::new(term0n), symbol1, Box::new(term2mn), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "let [op1,op2] = term1.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
+    "js": "let [op1,op2] = term1.v.split(',');\nlet term = new MPOperation(term0, op1, new MPPrefixOp(op2, term2));\nreturn term;",
     "num": 124
   },
   {
