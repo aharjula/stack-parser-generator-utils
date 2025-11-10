@@ -384,8 +384,8 @@ const OP_EQUIVALENCE: Map<&'static str,&'static str> = phf_map! {
 
     ":" => "assign",
     "::" => "assign",
-    ":=" => "assign",
-    "::=" => "assign"
+    ":=" => "assignf",
+    "::=" => "assignf"
 };
 
 #[derive(Deserialize, Clone)]
