@@ -289,7 +289,7 @@ struct ParserTables {
 // all (well hopefully) the pairs of (op1,op2) where a reduce would be done instead.
 
 const ALWAYS_REDUCE_IF_OP2: &[&str] = &["assign"];
-const ALWAYS_REDUCE_IF_OP1: &[&str] = &["?", "? ", "?? ", "'", "''", "not"];
+const ALWAYS_REDUCE_IF_OP1: &[&str] = &["?", "? ", "?? ", "'", "''"];
 const REDUCE_PAIRS: &[(&str,&str)] = &[
 ("exp", "mul"),
 ("exp", "add"),
@@ -300,18 +300,29 @@ const REDUCE_PAIRS: &[(&str,&str)] = &[
 ("div", "add"),
 ("div", "sub"),
 
-// The maxima parsing has assoasitivity difference between + and -.
+// The maxima parsing has assoacivity difference between + and -.
 ("sub", "sub"),
+// `a-b+c` is `(a-b)+c` and `-a+b` is `(-a)+b`.
+("sub", "add"),
 // Same with div / and *.
 ("div", "div"),
+// `a/b*c` is `(a/b)*c`.
+("div", "mul"),
+
 
 ("and", "or"),
 ("not", "and"),
 ("not", "or"),
 
 ("add", "rel"),
+("sub", "rel"),
 ("exp", "rel"),
 ("mul", "rel"),
+("div", "rel"),
+
+// Relations bind tighter than the logical operators.
+("rel", "and"),
+("rel", "or"),
 ];
 
 // Our operator system has plenty of noun versions, that should be assumed the same precedence
