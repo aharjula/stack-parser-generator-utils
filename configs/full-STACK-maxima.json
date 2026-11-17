@@ -1077,15 +1077,14 @@
     "num": 95
   },
   {
-    "left": "OpInfix",
+    "left": "OpPrefix",
     "right": [
-      "TopOp",
       "nounsub",
       "TopOp"
     ],
-    "php": "$term = new MP_Operation($term1->value, $term0, $term2);\n$term->set_position_from_nodes($term0, $term2);",
-    "rs": "if let StackMaximaParserTokenType::KEYWORD(symbol,_) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
-    "js": "new MPOperation(term0, term1.v, term2)",
+    "php": "$term = new MP_PrefixOp($term0->value, $term1);\n$term->set_position_from_token_node($term0, $term1);",
+    "rs": "if let StackMaximaParserTokenType::KEYWORD(symbol,_) = term0t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_tn(&term0t, &term1n), MPNodeType::PrefixOperation(symbol, Box::new(term1n))))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
+    "js": "new MPPrefixOp(term0.v, term1)",
     "num": 96
   },
   {

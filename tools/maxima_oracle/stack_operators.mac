@@ -1,0 +1,8 @@
+:lisp (defun rt (s) (let ((r (catch 'macsyma-quit (handler-case (list 'ok (macsyma-read-string (concatenate 'string s "$"))) (error () nil))))) (if (and (consp r) (eq (car r) 'ok)) (write-to-string (cadr r) :pretty nil) "SYNTAXERROR")))
+nary("nounand", 65)$ nary("nounor", 61)$ prefix("nounnot", 70)$
+prefix("#pm#")$ nary("#pm#", 100)$
+nary("nouneq", 150)$ nary("nounadd", 100)$ prefix("nounsub", 100)$ nary("nounmul", 120)$
+infix("noundiv", 122, 123)$ infix("nounpow", 140, 139)$ prefix("UNARY_RECIP", 100)$
+nary("nand", 62)$ nary("nor", 61)$ infix("implies", 59)$ nary("xnor", 58)$ nary("xor", 58)$
+
+:lisp (with-open-file (in "cases.txt") (with-open-file (out "maxima.txt" :direction :output :if-exists :supersede) (loop for line = (read-line in nil) while line do (write-line (rt line) out))))

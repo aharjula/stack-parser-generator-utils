@@ -1,0 +1,7 @@
+cases.txt
+maxima.txt
+maxima.log
+ours.txt
+diffs.txt
+dump/target/
+dump/Cargo.lock

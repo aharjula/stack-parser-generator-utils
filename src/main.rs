@@ -268,147 +268,118 @@ struct ParserTables {
     goto: HashMap<usize, HashMap<usize, usize>>
 }
 
-// So operator precedence is a hard thing. We cannot simply assign binding strengths
-// to all ops for left and right directions as some operators have various other features
-// like assosiativity to some direction. Also we do not actually have numerical values 
-// for all possible operators. So we do this by empirical means and define all pairs
-// we consider special.
-//
-// By special we mean those that reduce instead of shifting. To understand that consider:
+// Operator precedence follows Maxima's own parser, which gives every operator a left
+// binding power (lbp, how strongly it pulls the operand on its left) and a right binding
+// power (rbp, how strongly the operand on its right is held). Consider
 //
 //    a op1 b op2 ..
 //
-// When the parser stack has "a op1 b" or "op1 b" at the top and it has rules that 
-// could reduce that to an infix operation and the next token seen is "op2" which might
-// in the future turn to either "(a op1 b) op2 .." or "a op1 (b op2 ..)" we need to 
-// decide whether we pursue the former or latter case. If op1="*" and op1="+" we would 
-// reduce and take the first route but should both ops be "^" then the latter route would
-// be the one we want and we would shift.
+// When the parser stack has "a op1 b" (or "op1 b" for a prefix op1) at the top and the
+// next token is op2, it can reduce to "(a op1 b) op2 .." or shift towards
+// "a op1 (b op2 ..)". Maxima's rule: op2 takes b when lbp(op2) > rbp(op1), so we shift
+// exactly then and reduce otherwise. Equal powers therefore group to the left, as Maxima's
+// n-ary operators do, and `^` (140/139) and `:` (180/20) group to the right.
 //
-// This parser generator takes the fairly common stance of shifting by default, but we define
-// all (well hopefully) the pairs of (op1,op2) where a reduce would be done instead.
+// The values are Maxima's (5.49, `(get op 'lbp)` and `(get op 'rbp)`) with STACK's
+// declarations on top (`stack/maxima/noun_simp.mac`, `assessment.mac`, `stack_logic.lisp`).
+// `tools/maxima_oracle/` checks the generated parser against Maxima itself.
 
-const ALWAYS_REDUCE_IF_OP2: &[&str] = &["assign"];
-const ALWAYS_REDUCE_IF_OP1: &[&str] = &["?", "? ", "?? ", "'", "''"];
-const REDUCE_PAIRS: &[(&str,&str)] = &[
-("exp", "mul"),
-("exp", "add"),
-("exp", "sub"),
-("exp", "div"),
-("mul", "add"),
-("mul", "sub"),
-("div", "add"),
-("div", "sub"),
+// Infix (and postfix) operators: (lbp, rbp). Postfix operators only need the lbp.
+const INFIX_POWERS: Map<&'static str, (u32, u32)> = phf_map! {
+    ":" => (180, 20),
+    "::" => (180, 20),
+    ":=" => (180, 20),
+    "::=" => (180, 20),
 
-// The maxima parsing has assoacivity difference between + and -.
-("sub", "sub"),
-// `a-b+c` is `(a-b)+c` and `-a+b` is `(-a)+b`.
-("sub", "add"),
-// Same with div / and *.
-("div", "div"),
-// `a/b*c` is `(a/b)*c`.
-("div", "mul"),
+    "@" => (200, 201),
+    "!" => (160, 159),
+    "!!" => (160, 159),
 
+    // STACK: nary("nouneq", 150).
+    "nouneq" => (150, 150),
 
-("and", "or"),
-("not", "and"),
-("not", "or"),
+    "^" => (140, 139),
+    "^^" => (140, 139),
+    "**" => (140, 139),
+    "nounpow" => (140, 139),
+    // Exponents with a prefix operator on the exponent, a single token for the lookahead.
+    // As op1 the prefix operator holds the operand, so these take its rbp.
+    " ^-" => (140, 134),
+    " ^+" => (140, 134),
+    " ^+-" => (140, 100),
+    " ^#pm#" => (140, 100),
+    " ^^-" => (140, 134),
+    " ^^+" => (140, 134),
+    " ^^+-" => (140, 100),
+    " ^^#pm#" => (140, 100),
+    " **-" => (140, 134),
+    " **+" => (140, 134),
+    " **+-" => (140, 100),
+    " **#pm#" => (140, 100),
 
-("add", "rel"),
-("sub", "rel"),
-("exp", "rel"),
-("mul", "rel"),
-("div", "rel"),
+    // The cross product of the vect package: infix("~", 134, 133).
+    "~" => (134, 133),
+    "." => (130, 129),
+    // STACK: infix("noundiv", 122, 123).
+    "noundiv" => (122, 123),
 
-// Relations bind tighter than the logical operators.
-("rel", "and"),
-("rel", "or"),
+    "*" => (120, 120),
+    "/" => (120, 120),
+    "nounmul" => (120, 120),
+    "blankmult" => (120, 120),
+    "@@Is@@" => (120, 120),
+    "@@IS@@" => (120, 120),
 
-// And so does arithmetic: `a+2 and b` is `(a+2) and b`, not `a+(2 and b)`.
-("add", "and"),
-("add", "or"),
-("sub", "and"),
-("sub", "or"),
-("mul", "and"),
-("mul", "or"),
-("div", "and"),
-("div", "or"),
-("exp", "and"),
-("exp", "or"),
-];
+    "+" => (100, 100),
+    "-" => (100, 100),
+    "nounadd" => (100, 100),
+    "STACKpmOPT" => (100, 100),
+    "+-" => (100, 100),
+    "#pm#" => (100, 100),
 
-// Our operator system has plenty of noun versions, that should be assumed the same precedence
-// Instead of listing all pairs we describe the equivalent ones.
-// Also might as well group to natural terms.
-const OP_EQUIVALENCE: Map<&'static str,&'static str> = phf_map! {
-    "STACKpmOPT" => "add",
-    "+-" => "add",
-    "#pm#" => "add",
-    "+" => "add",
-    "nounadd" => "add",
+    "=" => (80, 80),
+    "#" => (80, 80),
+    "<" => (80, 80),
+    "<=" => (80, 80),
+    ">" => (80, 80),
+    ">=" => (80, 80),
 
-    "nounsub" => "sub",
-    "-" => "sub",
+    "and" => (65, 65),
+    "%and" => (65, 65),
+    "nounand" => (65, 65),
+    // STACK (stack_logic.lisp and assessment.mac).
+    "nand" => (62, 62),
+    "nor" => (61, 61),
+    "nounor" => (61, 61),
+    "or" => (60, 60),
+    "%or" => (60, 60),
+    // STACK: infix("implies", 59), which leaves the rbp at Maxima's default 180.
+    "implies" => (59, 180),
+    "xor" => (58, 58),
+    "xnor" => (58, 58),
+};
 
-    "nounmul" => "mul",
-    "blankmult" => "mul",
-    "@@Is@@" => "mul",
-    "@@IS@@" => "mul",
-    "*" => "mul",
-    "." => "mul",
-
-    "noundiv"=> "div",
-    "/" => "div",
-
-    "^" => "exp",
-    "^^" => "exp",
-    "**" => "exp",
-    "nounpow"=> "exp",
-    // Some special pairs the parser maps to special rules. Basically,
-    // with lookahead of 1 we need some tricks with prefix ops.
-    " ^-" => "exp",
-    " ^+" => "exp",
-    " ^+-" => "exp",
-    " ^#pm#" => "exp",
-    " ^^-" => "exp",
-    " ^^+" => "exp",
-    " ^^+-" => "exp",
-    " ^^#pm#" => "exp",
-    " **-" => "exp",
-    " **+" => "exp",
-    " **+-" => "exp",
-    " **#pm#" => "exp",
-
-    "nounand" => "and",
-    "%and" => "and",
-    "nand" => "and",
-    
-    
-    "%or" => "or",
-    "nounor" => "or",
-    "xor" => "or",
-    "xnor" => "or",
-    "nor" => "or",
-
-    "%not" => "not",
-    "not " => "not",
-    "nounnot" => "not",
-    "nounnot " => "not",
-    
-
-    // Some things really don't have an order.
-    "=" => "rel", 
-    "<" => "rel",
-    ">" => "rel",
-    "<=" => "rel",
-    ">=" => "rel",
-    "#" => "rel",
-    "nouneq" => "rel",
-
-    ":" => "assign",
-    "::" => "assign",
-    ":=" => "assignf",
-    "::=" => "assignf"
+// Prefix operators: rbp.
+const PREFIX_POWERS: Map<&'static str, u32> = phf_map! {
+    // Lisp escapes and quotes hold just the next term.
+    "?" => 1000,
+    "? " => 1000,
+    "?? " => 1000,
+    "'" => 1000,
+    "''" => 1000,
+    // STACK: prefix("#pm#") and then nary("#pm#", 100), which sets the rbp to 100 too.
+    "#pm#" => 100,
+    "+-" => 100,
+    "-" => 134,
+    "+" => 134,
+    // STACK: prefix("nounsub", 100) and prefix("UNARY_RECIP", 100).
+    "nounsub" => 100,
+    "UNARY_RECIP" => 100,
+    "not" => 70,
+    "not " => 70,
+    "%not" => 70,
+    "nounnot" => 70,
+    "nounnot " => 70,
 };
 
 #[derive(Deserialize, Clone)]
@@ -981,29 +952,20 @@ fn tables(rules: Vec<Rule>) -> (Vec<HashMap<String, TableEntry>>, HashMap<usize,
                 if opcase {
                     match op.clone().unwrap() {
                         TableEntry::Reduce(rule,_ , name) => {
-                            let mut op2 = tok.clone();
-                            let mut op1;
-                            if name == "OpInfix" || name == "OpSuffix" {
-                                op1 = rules[rule].right[1].clone().unwrap();
+                            let op2 = tok.clone();
+                            let rbp = if name == "OpInfix" || name == "OpSuffix" {
+                                let op1 = rules[rule].right[1].clone().unwrap();
+                                INFIX_POWERS.get(&op1).unwrap_or_else(|| panic!("No binding powers for infix `{op1}`")).1
                             } else {
-                                op1 = rules[rule].right[0].clone().unwrap();
-                            }
-                            if OP_EQUIVALENCE.contains_key(&op1) {
-                                op1 = OP_EQUIVALENCE.get(&op1).unwrap().to_string();
-                            }
-                            if OP_EQUIVALENCE.contains_key(&op2) {
-                                op2 = OP_EQUIVALENCE.get(&op2).unwrap().to_string();
-                            }
-
-                            // Now do we have an op that we know must reduce or a shift case?
-                            if ALWAYS_REDUCE_IF_OP1.contains(&&*op1) {
-                                real_line.insert(tok.clone(), op.unwrap().clone());
-                            } else if ALWAYS_REDUCE_IF_OP2.contains(&&*op2) {
-                                real_line.insert(tok.clone(), op.unwrap().clone());
-                            } else if REDUCE_PAIRS.contains(&(&*op1,&*op2)) {
-                                real_line.insert(tok.clone(), op.unwrap().clone());
-                            } else {
+                                let op1 = rules[rule].right[0].clone().unwrap();
+                                *PREFIX_POWERS.get(&op1).unwrap_or_else(|| panic!("No binding power for prefix `{op1}`"))
+                            };
+                            let lbp = INFIX_POWERS.get(&op2).unwrap_or_else(|| panic!("No binding powers for `{op2}` after an operator")).0;
+                            // Maxima's rule: shift only if the next operator binds harder.
+                            if lbp > rbp {
                                 opcase = false;
+                            } else {
+                                real_line.insert(tok.clone(), op.unwrap().clone());
                             }
                         },
                         TableEntry::Shift(_) => {
