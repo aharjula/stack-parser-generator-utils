@@ -323,6 +323,18 @@ const REDUCE_PAIRS: &[(&str,&str)] = &[
 // Relations bind tighter than the logical operators.
 ("rel", "and"),
 ("rel", "or"),
+
+// And so does arithmetic: `a+2 and b` is `(a+2) and b`, not `a+(2 and b)`.
+("add", "and"),
+("add", "or"),
+("sub", "and"),
+("sub", "or"),
+("mul", "and"),
+("mul", "or"),
+("div", "and"),
+("div", "or"),
+("exp", "and"),
+("exp", "or"),
 ];
 
 // Our operator system has plenty of noun versions, that should be assumed the same precedence

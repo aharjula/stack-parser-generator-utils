@@ -1429,7 +1429,7 @@
       "TopOp"
     ],
     "php": "$term = new MP_Operation($term1->value, $term0, $term2);\n$term->set_position_from_nodes($term0, $term2);",
-    "rs": "if let StackMaximaParserTokenType::SYMBOL(symbol) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
+    "rs": "if let StackMaximaParserTokenType::KEYWORD(symbol,_) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
     "js": "new MPOperation(term0, term1.v, term2)",
     "num": 125
   },
@@ -1441,7 +1441,7 @@
       "TopOp"
     ],
     "php": "$term = new MP_Operation($term1->value, $term0, $term2);\n$term->set_position_from_nodes($term0, $term2);",
-    "rs": "if let StackMaximaParserTokenType::SYMBOL(symbol) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
+    "rs": "if let StackMaximaParserTokenType::KEYWORD(symbol,_) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
     "js": "new MPOperation(term0, term1.v, term2)",
     "num": 126
   },
@@ -1453,7 +1453,7 @@
       "TopOp"
     ],
     "php": "$term = new MP_Operation($term1->value, $term0, $term2);\n$term->set_position_from_nodes($term0, $term2);",
-    "rs": "if let StackMaximaParserTokenType::SYMBOL(symbol) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
+    "rs": "if let StackMaximaParserTokenType::KEYWORD(symbol,_) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
     "js": "new MPOperation(term0, term1.v, term2)",
     "num": 127
   },
@@ -1465,7 +1465,7 @@
       "TopOp"
     ],
     "php": "$term = new MP_Operation($term1->value, $term0, $term2);\n$term->set_position_from_nodes($term0, $term2);",
-    "rs": "if let StackMaximaParserTokenType::SYMBOL(symbol) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
+    "rs": "if let StackMaximaParserTokenType::KEYWORD(symbol,_) = term1t.value.clone() {\n>ParserStackItem::Node(MPNode::new(MPPosition::new_nn(&term0n, &term2n), MPNodeType::Operation(Box::new(term0n), symbol, Box::new(term2n), InsertionType::None)))\n} else {\n>panic!(\"Unexpected token type.\")\n}",
     "js": "new MPOperation(term0, term1.v, term2)",
     "num": 128
   }
