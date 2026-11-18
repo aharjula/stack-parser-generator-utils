@@ -1120,8 +1120,10 @@ fn condensedtables_to_phf(tables: ParserTables) -> String {
     pub terminals: phf::Map<&'static str, usize>,
     pub rules_to_nonterminals: &'a[usize],
     pub rule_lengths: &'a[usize],
-    pub table: &'a[phf::Map<usize, usize>],
-    pub goto: phf::Map<usize, &'static phf::Map<usize, usize>>
+    // Keyed by u32: phf hashes a usize by its width, so tables built on a 64-bit host
+    // would not be found on a 32-bit target such as WebAssembly.
+    pub table: &'a[phf::Map<u32, usize>],
+    pub goto: phf::Map<u32, &'static phf::Map<u32, usize>>
 }\n\n");
     result.push_str("#[derive(PartialEq)]
 pub enum TableAction {
@@ -1145,7 +1147,7 @@ pub enum TableAction {
         let Some(t) = self.terminals.get(&token) else {
             return TableAction::None;
         };
-        let val = self.table[state].get(t);
+        let val = self.table[state].get(&(*t as u32));
         match val {
             None => {
                 TableAction::None
@@ -1167,11 +1169,11 @@ pub enum TableAction {
     // So nested phf_maps don't exist at the time of this writing.
     // https://github.com/rust-phf/rust-phf/issues/183
     // thus we write these here.
-    result.push_str("type NestedMap = phf::Map<usize, usize>;");
+    result.push_str("type NestedMap = phf::Map<u32, usize>;");
     for (state, table) in tables.goto.clone().into_iter() {
         result.push_str(&format!("static NESTED_GOTO_{state}: NestedMap = phf_map!{{\n"));
         for (k,v) in table.into_iter() {
-            result.push_str(&format!("  {k}usize => {v}usize,\n"));
+            result.push_str(&format!("  {k}u32 => {v}usize,\n"));
         }
         let _ = result.pop();
         let _ = result.pop();
@@ -1240,11 +1242,11 @@ pub enum TableAction {
             match v {
                 CondensedShiftReduce::Shift(s) => {
                     let vv: usize = s*2;
-                    result.push_str(&format!("{}usize => {}usize,\n", k, vv));
+                    result.push_str(&format!("{}u32 => {}usize,\n", k, vv));
                 },
                 CondensedShiftReduce::Reduce(r,_) => {
                     let vv: usize = r*2+1;
-                    result.push_str(&format!("{}usize => {}usize,\n", k, vv));
+                    result.push_str(&format!("{}u32 => {}usize,\n", k, vv));
                 }
             }
         }
@@ -1257,7 +1259,7 @@ pub enum TableAction {
 
     result.push_str("   goto: phf_map! {");
     for (state, _) in tables.goto.into_iter() {
-        result.push_str(&format!("   {state}usize => &NESTED_GOTO_{state},\n"));
+        result.push_str(&format!("   {state}u32 => &NESTED_GOTO_{state},\n"));
     }
     // Undo the last comma.
     let _ = result.pop();
