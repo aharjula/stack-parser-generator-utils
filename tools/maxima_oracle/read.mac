@@ -1,0 +1,2 @@
+:lisp (defun rt (s) (let ((r (catch 'macsyma-quit (handler-case (list 'ok (macsyma-read-string (concatenate 'string s "$"))) (error () nil))))) (if (and (consp r) (eq (car r) 'ok)) (write-to-string (cadr r) :pretty nil) "SYNTAXERROR")))
+:lisp (with-open-file (in "cases.txt") (with-open-file (out "maxima.txt" :direction :output :if-exists :supersede) (loop for line = (read-line in nil) while line do (write-line (rt line) out))))

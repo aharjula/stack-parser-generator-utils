@@ -2,9 +2,10 @@
 
 `run.sh` generates about 10 000 expressions (`gen.py`): every pair of binary operators the
 grammar knows (`a op1 b op2 c`), each prefix operator in front and inside, and the postfix
-operators. Maxima reads them with STACK's operator declarations loaded
-(`stack_operators.mac`, from `stack/maxima/noun_simp.mac`, `assessment.mac` and
-`stack_logic.lisp`), and the Rust parser reads them too (`dump/`). `compare.py` normalises
+operators. Maxima reads them with STACK's operator declarations loaded: the STACK-Maxima
+image `../../../stack-maxima/STACK-maxima` when it exists, which has them built in, or a
+plain `maxima` with `stack_operators.mac` (copied from `stack/maxima/noun_simp.mac`,
+`assessment.mac` and `stack_logic.lisp`), and the Rust parser reads them too (`dump/`). `compare.py` normalises
 both trees (binary `-` as `+` of a negation, Maxima's n-ary operators flattened, `!!` as
 Maxima's `genfact`) and writes every difference to `diffs.txt`.
 
