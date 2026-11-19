@@ -6,3 +6,4 @@ diffs.txt
 dump/target/
 dump/Cargo.lock
 run.mac
+__pycache__/

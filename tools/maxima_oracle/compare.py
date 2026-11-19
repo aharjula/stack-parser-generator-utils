@@ -61,24 +61,29 @@ def show(t):
         return t
     return "(" + " ".join([t[0]] + [show(a) for a in t[1:]]) + ")"
 
-cases = open("cases.txt").read().splitlines()
-mx = open("maxima.txt").read().splitlines()
-us = open("ours.txt").read().splitlines()
-stats = collections.Counter()
-diffs = []
-for c, m, u in zip(cases, mx, us):
-    if m == "SYNTAXERROR" and u == "SYNTAXERROR":
-        stats["both reject"] += 1; continue
-    if m == "SYNTAXERROR":
-        stats["only Maxima rejects"] += 1; continue
-    if u == "SYNTAXERROR":
-        stats["only we reject"] += 1; diffs.append(("reject", c, show(norm_max(parse(tokens(m)))), "SYNTAXERROR")); continue
-    a = norm_max(parse(tokens(m))); b = norm_ours(parse(tokens(u)))
-    if a == b:
-        stats["same"] += 1
-    else:
-        stats["DIFFERENT"] += 1; diffs.append(("diff", c, show(a), show(b)))
-print(dict(stats))
-with open("diffs.txt", "w") as f:
-    for d in diffs:
-        f.write("%s | %-28s | maxima %-40s | ours %s\n" % d)
+def main():
+    cases = open("cases.txt").read().splitlines()
+    mx = open("maxima.txt").read().splitlines()
+    us = open("ours.txt").read().splitlines()
+    stats = collections.Counter()
+    diffs = []
+    for c, m, u in zip(cases, mx, us):
+        if m == "SYNTAXERROR" and u == "SYNTAXERROR":
+            stats["both reject"] += 1; continue
+        if m == "SYNTAXERROR":
+            stats["only Maxima rejects"] += 1; continue
+        if u == "SYNTAXERROR":
+            stats["only we reject"] += 1; diffs.append(("reject", c, show(norm_max(parse(tokens(m)))), "SYNTAXERROR")); continue
+        a = norm_max(parse(tokens(m))); b = norm_ours(parse(tokens(u)))
+        if a == b:
+            stats["same"] += 1
+        else:
+            stats["DIFFERENT"] += 1; diffs.append(("diff", c, show(a), show(b)))
+    print(dict(stats))
+    with open("diffs.txt", "w") as f:
+        for d in diffs:
+            f.write("%s | %-28s | maxima %-40s | ours %s\n" % d)
+
+
+if __name__ == "__main__":
+    main()
